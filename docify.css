@@ -1,0 +1,15 @@
+div.element{
+    font-family:sans-serif;
+}
+div.element.value{
+    display:inline-block;
+    font-family:monospace;
+}
+
+div.element.label{
+    font-weight:bold;
+    display:block;
+}
+span.ui-icon{
+	display:inline-block;
+}
