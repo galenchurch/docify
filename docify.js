@@ -60,9 +60,13 @@ jQuery(document).ready(function(){
 			jQuery(this).parent().html(current);
 			papa.removeClass("clicked")
 		});
-
 		
 
+	});
+
+	jQuery("input.search").focus(function(){
+		console.log("witf")
+		jQuery(this).val("")
 	});
 
 

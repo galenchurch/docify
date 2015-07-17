@@ -162,17 +162,14 @@ class Collection:
                     viewcol  = "%s - N/A" % viewcol
         return viewcol
 
-    def elmentalTData(self, element, id):
-        pass
-
     def overView(self, num_els=5):
         #create header/search bar
 
-        view = "<table><tr class=\"header\">"
-        view = "%s<td><input type=text id=\"search-date\" value=\"date\"></input></td>"% (view)
+        view = "<table><tr class=\"search-header\">"
+        view = "%s<td><input type=text class=\"search\" id=\"search-date\" value=\"date\"></input></td>"% (view)
         for k in self.imp_els:
             # view = "%s%s" % (view, self.elementalCol(k, num_els))
-            view = "%s<td><input type=text id=\"search-%s\" value=\"%s\"></input></td>" % (view, k, k)
+            view = "%s<td><input type=text class=\"search\" id=\"search-%s\" value=\"%s\"></input></td>" % (view, k, k)
         view = "%s</tr>" % (view)
         web.debug(view)
 
