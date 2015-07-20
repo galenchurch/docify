@@ -162,30 +162,42 @@ class Collection:
                     viewcol  = "%s - N/A" % viewcol
         return viewcol
 
-    def overView(self, num_els=5):
-        #create header/search bar
-
-        view = "<table><tr class=\"search-header\">"
-        view = "%s<td><input type=text class=\"search\" id=\"search-date\" value=\"date\"></input></td>"% (view)
+    def overHeader(self):
+        viewhead = "<table><tr class=\"search-header\">"
+        viewhead = "%s<td><input type=text class=\"search\" id=\"search-date\" value=\"date\"></input></td>"% (viewhead)
         for k in self.imp_els:
             # view = "%s%s" % (view, self.elementalCol(k, num_els))
-            view = "%s<td><input type=text class=\"search\" id=\"search-%s\" value=\"%s\"></input></td>" % (view, k, k)
-        view = "%s</tr>" % (view)
-        web.debug(view)
+            viewhead = "%s<td><input type=text class=\"search\" id=\"search-%s\" value=\"%s\"></input></td>" % (viewhead, k, k)
+        viewhead = "%s</tr>" % (viewhead)
+        web.debug(viewhead)
+        return viewhead
+
+    def overData(self, view_curr):
+        view_curr  = "%s<tr><td><a href=\"%s/%s\">%s</a></td>" % (view_curr, self.loc, doc.objId, doc.time.date().isoformat())
+                
+        for el in doc.elements:
+            for k in self.imp_els:
+                if el.key == k:
+                    view_curr = "%s<td>%s</td>" % (view_curr, el.overView("%s/%s" % (self.loc, doc.objId)))
+                    
+        view_curr = "%s<tr>" % (view_curr)
+        return view_curr
+
+    def overView(self, header=True, num_els=5):
+        #create header/search bar
+
+        if header:
+            view = self.overHeader()
+        else:
+            view = "<table>"
 
         for doc in self.coll:
             if num_els < 0:
                 break
             else:
                 num_els = num_els - 1
-                view  = "%s<tr><td><a href=\"%s/%s\">%s</a></td>" % (view, self.loc, doc.objId, doc.time.date().isoformat())
+                view = self.overData(view)
                 
-                for el in doc.elements:
-                    for k in self.imp_els:
-                        if el.key == k:
-                            view = "%s<td>%s</td>" % (view, el.overView("%s/%s" % (self.loc, doc.objId)))
-                            
-                view = "%s<tr>" % (view)
         view = "%s</table>" % view
         web.debug(view)
         return view
