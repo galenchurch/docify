@@ -1,18 +1,18 @@
 function createSubmit(el_id){
 
-	return "<span class=\"ui-icon ui-icon-check\" id=" + el_id +"-sub ></span><span class=\"ui-icon ui-icon-close\" id=" + el_id +"-can ></span>"
+	return "<span class=\"ui-icon ui-icon-check\" id=" + el_id +"-sub ></span><span class=\"ui-icon ui-icon-close\" id=" + el_id +"-can ></span>";
 
 }
 
 function genPUrl(){
 	var cur = window.location.pathname.spit('/');
 
-	return cur
+	return cur;
 }
 
 function cleanKey(item){
-	var clean = item.split('-')
-	return clean[0]
+	var clean = item.split('-');
+	return clean[0];
 }
 
 function updateAjax(item, data){
@@ -34,6 +34,7 @@ function updateAjax(item, data){
             alert("Failed To update, see console");
         });
 }
+
 
 jQuery(document).ready(function(){
 
@@ -64,10 +65,7 @@ jQuery(document).ready(function(){
 
 	});
 
-	jQuery("input.search").focus(function(){
-		console.log("witf")
-		jQuery(this).val("")
-	});
+
 
 
 });

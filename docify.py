@@ -135,8 +135,9 @@ class Document:
         web.debug(self.elements)
 
 class Collection:
-    def __init__(self, coll, link, important=["_id"]):
+    def __init__(self, coll, name, link, important=["_id"]):
         self.coll = []
+        self.collection_name = name
         self.imp_els = important
         self.loc = link
         self.count = 0
@@ -147,7 +148,7 @@ class Collection:
         
         viewcol = "<div class=\"collumn-%d\">" % (self.count)
         self.count = self.count + 1
-        viewcol = "%s - <input type=text id=\"search-%s\" value=\"%s\"></input>" % (viewcol, element, element)
+        viewcol = "%s - <input type=text id=\"search-%s-%s\" value=\"%s\"></input>" % (viewcol, self.collection_name, element, element)
         for doc in self.coll:
             if num_els < 0:
                 break
@@ -163,20 +164,20 @@ class Collection:
         return viewcol
 
     def overHeader(self):
-        viewhead = "<table><tr class=\"search-header\">"
-        viewhead = "%s<td><input type=text class=\"search\" id=\"search-date\" value=\"date\"></input></td>"% (viewhead)
+        viewhead = "<table class=\"%s\"><thead><tr class=\"search-header\">" % self.collection_name
+        viewhead = "%s<td><input type=text class=\"search\" id=\"search-date\" value=\"date\" disabled=\"disabled\"></input></td>"% (viewhead)
         for k in self.imp_els:
             # view = "%s%s" % (view, self.elementalCol(k, num_els))
-            viewhead = "%s<td><input type=text class=\"search\" id=\"search-%s\" value=\"%s\"></input></td>" % (viewhead, k, k)
-        viewhead = "%s</tr>" % (viewhead)
+            viewhead = "%s<td><input type=text class=\"search\" id=\"search-%s-%s\" value=\"%s\"></input></td>" % (viewhead, self.collection_name, k, k)
+        viewhead = "%s</tr></thead>" % (viewhead)
         web.debug(viewhead)
         return viewhead
 
-    def overData(self, view_curr):
+    def overData(self, doc, view_curr):
         view_curr  = "%s<tr><td><a href=\"%s/%s\">%s</a></td>" % (view_curr, self.loc, doc.objId, doc.time.date().isoformat())
                 
-        for el in doc.elements:
-            for k in self.imp_els:
+        for k in self.imp_els:
+            for el in doc.elements:
                 if el.key == k:
                     view_curr = "%s<td>%s</td>" % (view_curr, el.overView("%s/%s" % (self.loc, doc.objId)))
                     
@@ -189,16 +190,18 @@ class Collection:
         if header:
             view = self.overHeader()
         else:
-            view = "<table>"
+            view = "<table class=\"%s\">" % self.collection_name
+
+        view = "%s<tbody>" % view
 
         for doc in self.coll:
             if num_els < 0:
                 break
             else:
                 num_els = num_els - 1
-                view = self.overData(view)
+                view = self.overData(doc, view)
                 
-        view = "%s</table>" % view
+        view = "%s</tbody></table>" % view
         web.debug(view)
         return view
 

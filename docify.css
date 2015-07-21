@@ -1,6 +1,9 @@
 div.element{
     font-family:sans-serif;
 }
+div.element{
+    font-family:sans-serif;
+}
 div.element.value{
     display:inline-block;
     font-family:monospace;
