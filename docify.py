@@ -27,6 +27,16 @@ def getValue(key, value):
             ret_val = ""
     return ret_val
 
+def dotToJSON(to_split, value):
+    spl = to_split.split('.')
+    if len(spl) >= 2:
+        return "\"{0}\":{{{1}}}".format(spl[0], dotToJSON('.'.join(spl[1:]), value))
+    else:
+        return "\"{0}\":\"{1}\"".format(spl[0], value)
+        
+def getDict(string):
+    return json.loads("{{{0}}}".format(string))
+
 class element:
 
     def __init__(self, key, value):
@@ -99,11 +109,11 @@ class element:
             view = "%s<div style=\"padding-left:%dpx;\" class=\"%s value\" id=%s-value name=%s-value>%s</div>" % (view, level*10, htmlClass, self.key, self.key, self.value)
         return view
 
-    def submitView(self, DB, new=False):
+    def submitView(self, DB, new=False, level=0):
         if new and self.key == "_id":
-            return ""
+            view = ""
         else:
-            view = "<label for=\"%s\">%s</label>" % (self.key, self.label)
+            view = "<label style=\"padding-left:%dpx;\" for=\"%s\">%s</label>" % (level*10, self.key, self.label)
             cross = self.crossCollection()
             if cross:
                 select = "<select name=\"%s\" id=\"%s\">" % (self.key, self.key)
@@ -115,9 +125,42 @@ class element:
                     else:
                         select = "%s<option value=\"%s\">%s</option>" % (select, x["_id"], self.getFundamentalField(x))
                 select = "%s</select>" % (select)
-                return "%s%s" % (view, select)
+                view =  "%s%s" % (view, select)
             else:
-                return "%s<input type=\"text\" name=\"%s\" id=\"%s\" value=\"%s\" class=\"text ui-widget-content ui-corner-all\">" % (view, self.key, self.key, self.value)
+                if type(self.value) is dict:
+                    web.debug("dict: %s" % self.value)
+                    nested = []
+                    for x_c,y_c in self.value.iteritems():
+                        emb_index = "%s.%s" % (self.key, x_c)
+                        web.debug(emb_index)
+                        nested.append(element(emb_index, y_c).submitView(DB, new, level+1))
+                        web.debug("found dict in loop")
+                    web.debug("joing nested dict")
+                    web.debug(nested)
+                    view = "%s%s" % (view, "".join(nested))
+                elif type(self.value) is list:
+                    web.debug("found list")
+                    view = "%s<ol>" % (view)
+                    for el in self.value:
+                        nested = []
+                        if type(el) is dict:
+                            for x_c,y_c in el.iteritems():
+                                emb_index = "%s.%s" % (self.key, x_c)
+                                nested.append(element(emb_index, y_c).submitView(DB, new, level+1))
+                                web.debug("found dict2: %d" % (level))
+                        else:
+                            web.debug("straight list")
+                            nested.append(str(el))
+                        web.debug("joing nested list")
+                        view = "%s<li>%s</li>" % (view, "".join(nested))
+                    view = "%s</ol>" % (view)
+                else:
+                    web.debug("reggs")
+                    view = "%s<input style=\"padding-left:%dpx;\" type=\"text\" name=\"%s\" id=\"%s\" value=\"%s\" class=\"text ui-widget-content ui-corner-all\">" % (view, level*10, self.key, self.key, self.value)
+        return view
+
+                
+
     def overView(self, addr):
         return "<a href=\"%s\">%s</a>" % (addr, self.value)
 

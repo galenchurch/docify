@@ -16,3 +16,6 @@ div.element.label{
 span.ui-icon{
 	display:inline-block;
 }
+thead tr{
+	border-bottom:1px solid gray;
+}
