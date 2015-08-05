@@ -8,6 +8,7 @@ import string
 import web
 import bson
 from bson.objectid import ObjectId
+from dictmerge import merge
 
 fundamentals = ['name', 'sn']
 
@@ -36,6 +37,12 @@ def dotToJSON(to_split, value):
         
 def getDict(string):
     return json.loads("{{{0}}}".format(string))
+
+def mergeAll(array):
+    merged = {}
+    for x in array:
+        merged = merge(merged, x)
+    return merged
 
 class element:
 
@@ -113,7 +120,7 @@ class element:
         if new and self.key == "_id":
             view = ""
         else:
-            view = "<label style=\"padding-left:%dpx;\" for=\"%s\">%s</label>" % (level*10, self.key, self.label)
+            view = "<label style=\"margin-left:%dpx;\" for=\"%s\">%s</label>" % (level*10, self.key, self.label.split('.')[-1])
             cross = self.crossCollection()
             if cross:
                 select = "<select name=\"%s\" id=\"%s\">" % (self.key, self.key)
@@ -156,7 +163,7 @@ class element:
                     view = "%s</ol>" % (view)
                 else:
                     web.debug("reggs")
-                    view = "%s<input style=\"padding-left:%dpx;\" type=\"text\" name=\"%s\" id=\"%s\" value=\"%s\" class=\"text ui-widget-content ui-corner-all\">" % (view, level*10, self.key, self.key, self.value)
+                    view = "%s<input style=\"margin-left:%dpx;\" type=\"text\" name=\"%s\" id=\"%s\" value=\"%s\" class=\"text ui-widget-content ui-corner-all\">" % (view, level*10, self.key, self.key, self.value)
         return view
 
                 
