@@ -77,7 +77,7 @@ class element:
         for fun in fundamentals:
             try:
                 temp = dbob[fun]
-                web.debug(temp)
+                # web.debug(temp)
                 return temp
             except:
                 pass
@@ -92,8 +92,8 @@ class element:
             for x_c,y_c in self.value.iteritems():
                 emb_index = "%s.%s" % (self.key, x_c)
                 nested.append(element(emb_index, y_c).displayView(htmlClass, level+1))
-                web.debug("found dict")
-            web.debug("joing nested dict")
+                # web.debug("found dict")
+            # web.debug("joing nested dict")
             view = "%s%s" % (view, "".join(nested))
         elif type(self.value) is list:
             web.debug("found list")
@@ -104,15 +104,15 @@ class element:
                     for x_c,y_c in el.iteritems():
                         emb_index = "%s.%s" % (self.key, x_c)
                         nested.append(element(emb_index, y_c).displayView(htmlClass, level+1))
-                        web.debug("found dict %d" % (level))
+                        # web.debug("found dict %d" % (level))
                 else:
-                    web.debug("straight list")
+                    # web.debug("straight list")
                     nested.append(str(el))
-                web.debug("joing nested list")
+                # web.debug("joing nested list")
                 view = "%s<li>%s</li>" % (view, "".join(nested))
             view = "%s</ol>" % (view)
         else:
-            web.debug("reggs")
+            # web.debug("reggs")
             view = "%s<div style=\"padding-left:%dpx;\" class=\"%s value\" id=%s-value name=%s-value>%s</div>" % (view, level*10, htmlClass, self.key, self.key, self.value)
         return view
 
@@ -135,7 +135,7 @@ class element:
                 view =  "%s%s" % (view, select)
             else:
                 if type(self.value) is dict:
-                    web.debug("dict: %s" % self.value)
+                    # web.debug("dict: %s" % self.value)
                     nested = []
                     for x_c,y_c in self.value.iteritems():
                         emb_index = "%s.%s" % (self.key, x_c)
