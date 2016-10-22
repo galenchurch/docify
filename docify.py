@@ -5,7 +5,6 @@
 import json
 import re
 import string
-import web
 import bson
 from bson.objectid import ObjectId
 from dictmerge import merge
@@ -66,7 +65,7 @@ class element:
             length = len(parts)
             if length > 0 and parts[length-1] == "id":
                 if length > 2:
-                    web.debug("Coss with Different Database")
+                    print("Coss with Different Database")
                     return False
                 else:                    
                     if len(parts[0]) > 0:
@@ -77,7 +76,7 @@ class element:
         for fun in fundamentals:
             try:
                 temp = dbob[fun]
-                # web.debug(temp)
+                # print(temp)
                 return temp
             except:
                 pass
@@ -92,11 +91,11 @@ class element:
             for x_c,y_c in self.value.iteritems():
                 emb_index = "%s.%s" % (self.key, x_c)
                 nested.append(element(emb_index, y_c).displayView(htmlClass, level+1))
-                # web.debug("found dict")
-            # web.debug("joing nested dict")
+                # print("found dict")
+            # print("joing nested dict")
             view = "%s%s" % (view, "".join(nested))
         elif type(self.value) is list:
-            web.debug("found list")
+            print("found list")
             view = "%s<ol>" % (view)
             for el in self.value:
                 nested = []
@@ -104,15 +103,15 @@ class element:
                     for x_c,y_c in el.iteritems():
                         emb_index = "%s.%s" % (self.key, x_c)
                         nested.append(element(emb_index, y_c).displayView(htmlClass, level+1))
-                        # web.debug("found dict %d" % (level))
+                        # print("found dict %d" % (level))
                 else:
-                    # web.debug("straight list")
+                    # print("straight list")
                     nested.append(str(el))
-                # web.debug("joing nested list")
+                # print("joing nested list")
                 view = "%s<li>%s</li>" % (view, "".join(nested))
             view = "%s</ol>" % (view)
         else:
-            # web.debug("reggs")
+            # print("reggs")
             view = "%s<div style=\"padding-left:%dpx;\" class=\"%s value\" id=%s-value name=%s-value>%s</div>" % (view, level*10, htmlClass, self.key, self.key, self.value)
         return view
 
@@ -135,18 +134,18 @@ class element:
                 view =  "%s%s" % (view, select)
             else:
                 if type(self.value) is dict:
-                    # web.debug("dict: %s" % self.value)
+                    # print("dict: %s" % self.value)
                     nested = []
                     for x_c,y_c in self.value.iteritems():
                         emb_index = "%s.%s" % (self.key, x_c)
-                        web.debug(emb_index)
+                        print(emb_index)
                         nested.append(element(emb_index, y_c).submitView(DB, new, level+1))
-                        web.debug("found dict in loop")
-                    web.debug("joing nested dict")
-                    web.debug(nested)
+                        print("found dict in loop")
+                    print("joing nested dict")
+                    print(nested)
                     view = "%s%s" % (view, "".join(nested))
                 elif type(self.value) is list:
-                    web.debug("found list")
+                    print("found list")
                     view = "%s<ol>" % (view)
                     for el in self.value:
                         nested = []
@@ -154,15 +153,15 @@ class element:
                             for x_c,y_c in el.iteritems():
                                 emb_index = "%s.%s" % (self.key, x_c)
                                 nested.append(element(emb_index, y_c).submitView(DB, new, level+1))
-                                web.debug("found dict2: %d" % (level))
+                                print("found dict2: %d" % (level))
                         else:
-                            web.debug("straight list")
+                            print("straight list")
                             nested.append(str(el))
-                        web.debug("joing nested list")
+                        print("joing nested list")
                         view = "%s<li>%s</li>" % (view, "".join(nested))
                     view = "%s</ol>" % (view)
                 else:
-                    web.debug("reggs")
+                    print("reggs")
                     view = "%s<input style=\"margin-left:%dpx;\" type=\"text\" name=\"%s\" id=\"%s\" value=\"%s\" class=\"text ui-widget-content ui-corner-all\">" % (view, level*10, self.key, self.key, self.value)
         return view
 
@@ -179,10 +178,10 @@ class Document:
             self.elements.append(element(x, y))
             if x == "_id":
                 self.objId = y
-                web.debug(y)
+                print(y)
 
         self.time = self.objId.generation_time
-        web.debug(self.elements)
+        print(self.elements)
 
 class Collection:
     def __init__(self, coll, name, link, important=["_id"]):
@@ -220,7 +219,7 @@ class Collection:
             # view = "%s%s" % (view, self.elementalCol(k, num_els))
             viewhead = "%s<td><input type=text class=\"search\" id=\"search-%s-%s\" value=\"%s\"></input></td>" % (viewhead, self.collection_name, k, k)
         viewhead = "%s</tr></thead>" % (viewhead)
-        web.debug(viewhead)
+        print(viewhead)
         return viewhead
 
     def overData(self, doc, view_curr):
@@ -252,7 +251,7 @@ class Collection:
                 view = self.overData(doc, view)
                 
         view = "%s</tbody></table>" % view
-        web.debug(view)
+        print(view)
         return view
 
 
